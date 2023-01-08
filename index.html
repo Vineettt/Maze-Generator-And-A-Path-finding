@@ -1,19 +1,42 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Maze and A*</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <input type="range" min="5" max="50" step="5" value="5" class="slider" id="range">
-        <button onclick="startMaze()">Start Maze</button>
-        
-        <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js" async defer></script>
-        <script src="cell.js" async defer></script>
-        <script src="sketch.js" async defer></script>
-    </body>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Maze and A*</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <input type="radio" id="rmg" name="maze_generator" value="recursive_maze_generator" checked>
+    <label for="rmg">Recursive Maze Generator</label><br>
+    <input type="radio" id="iter_imp" name="maze_generator" value="iterative_implementation">
+    <label for="iter_imp">Iterative implementation</label><br>
+    <!-- <input type="radio" id="css" name="fav_language" value="CSS">
+    <label for="css">CSS</label><br> -->
+    <button onclick="initMazeGeneration()">Generate Maze</button>
+
+    <br>
+
+    <input type="radio" id="a_star" name="path_finding" value="a_star" checked>
+    <label for="a_star">A*</label><br>
+    <input type="radio" id="sample_algorithm" name="path_finding" value="sample_algorithm">
+    <label for="sample_algorithm">Sample Algorithm</label><br>
+    <!-- <input type="radio" id="age2" name="age" value="60">
+    <label for="age2">31 - 60</label><br> -->
+    <button onclick="initPathFinding()">Generate Path</button>
+    <br>
+
+    <input type="range" min="5" max="100" step="5" value="5" class="slider" id="no_of_cells">
+    <input type="range" min="100" max="1000" step="100" value="500" class="slider" id="weight_height">
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js" async defer></script>
+    <script src="./js/cell.js" async defer></script>
+    <script src="./js/sketch.js" async defer></script>
+</body>
+
 </html>

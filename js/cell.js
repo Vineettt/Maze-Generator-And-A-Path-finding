@@ -3,6 +3,7 @@ function Cell(i, j) {
     this.j = j;
     this.walls = [true, true, true, true];
     this.visited = false;
+    this.count;
 
     this.f = 0;
     this.g = 0;

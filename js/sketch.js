@@ -57,6 +57,7 @@ function initPathFinding() {
     queue.push(start);
     count = 0;
     start_time = new Date();
+    path = [];
     loop();
 }
 
@@ -195,7 +196,7 @@ function Recursive_Maze_Generator() {
 
 function Iterative_Implementation() {
     if (stack.length !== 0) {
-        current = stack.pop();
+        current = stack.shift();
         current.highlight(color(0, 0, 255, 100));
         let next = current.checkNeighbors();
         if (next) {
@@ -288,41 +289,24 @@ function A_Star() {
 
 function Sample_Algorithm() {
     let tempQueue = [];
-    let counterQueue = queue.filter(elm => { return elm.count === count });
-    for (let i = 0; i < counterQueue.length; i++) {
-        let currentNode = counterQueue[i];
-        let neighbors = currentNode.neighbors;
+    for (let i = 0; i < queue.length; i++) {
+        current = queue[i];
+        neighbors = current.neighbors;
         for (let j = 0; j < neighbors.length; j++) {
-            if (!currentNode.walls[this.getWallIndex(currentNode, neighbors[j])]) {
-                neighbors[j].previous = currentNode;
-                tempQueue.push(neighbors[j]);
+            let neighbor = neighbors[j];
+            if (!current.walls[this.getWallIndex(current, neighbor)]) {
+                let index = queue.findIndex((elm) => { return elm.i === neighbor.i && elm.j === neighbor.j });
+                if(index === -1){
+                    tempQueue.push(neighbor);
+                }
             }
         }
     }
-    for (let i = 0; i < tempQueue.length; i++) {
-        if (tempQueue[i].previous.walls[this.getWallIndex(tempQueue[i].previous, tempQueue[i])]) {
-            tempQueue[i].previous = undefined;
-            tempQueue[i].count = -1;
-        }
-        this.removeNodeByCordinates(tempQueue[i])
-    }
-
-    tempQueue = tempQueue.filter((value, index, self) =>
-        index === self.findIndex((t) => (
-            t.i === value.i && t.j === value.j
-        ))
-    )
-
-    tempQueue = tempQueue.filter(elm => {
-        return !(elm.count === -1);
-    })
     tempQueue.forEach(element => {
-        if (element.count === undefined) {
-            element.count = count + 1;
-        }
+        element.count = count + 1;
     });
     queue = queue.concat(tempQueue);
-    count++;
+    count ++;
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].show();
@@ -331,7 +315,7 @@ function Sample_Algorithm() {
     for (let i = 0; i < queue.length; i++) {
         queue[i].show(color(255, 0, 0, 40));
     }
-    // this.sampleAlgoFindPath();
+    this.sampleAlgoFindPath();
     if (this.checkIfAlgoReachedEnd()) {
         this.sampleAlgoFindPath();
         noLoop()
@@ -344,13 +328,6 @@ function checkIfAlgoReachedEnd() {
         return false;
     } else {
         return true;
-    }
-}
-
-function removeNodeByCordinates(a) {
-    let index = queue.findIndex((elm) => { return elm.i === a.i && elm.j === a.j });
-    if (index !== -1) {
-        queue.splice(index, 1);
     }
 }
 
@@ -367,45 +344,27 @@ function CreatePath() {
 }
 
 function sampleAlgoFindPath() {
-    path = queue;
-    path.push(end);
+    path = [];
     current = end;
-    let tcount = count;
-    while (tcount > -1) {
-        let tempArray = queue.filter(elm=>{return elm.count === tcount});
-        console.log(tempArray, tcount)
+    path.push(end);
+    tcount = count - 1;
 
-    //     // for (let i = 0; i < tempArray.length; i++) {
-    //     //     if(!current.walls[this.getWallIndex(current, tempArray[i])]){
-    //     //         current = tempArray[i];
-    //     //         path.push(tempArray[i]);
-    //     //     }
-    //     // }
-    //     let walls = current.walls;
-    //     for (let i = 0; i < walls.length; i++) {
-    //         if (walls[i] === false) {
-    //             let indexs = this.getIndexByWall(current.i, current.j, i);
-    //             let index = queue.findIndex((elm) => { return elm.i === indexs.i && elm.j === indexs.j });
-    //             if (index !== -1) {
-    //                 let checkIndex = path.findIndex((elm) => { return elm.i ===  queue[index].i && elm.j ===  queue[index].j });
-    //                 // if(checkIndex !== -1){
-    //                     // path.splice(checkIndex, 1);
-    //                 // }else{
-    //                     console.log(checkIndex);
-    //                     path.push(queue[index]);
-    //                     current = queue[index];
-    //                 // }
-    //             }
-    //             // console.log(current)
-    //         }
-    //     }
+    while(tcount > -1){
+        let temp = queue.filter((elm)=>{ return elm.count === tcount })
+        let neighbors = current.neighbors;
+        for (let i = 0; i < neighbors.length; i++) {
+            let neighbor = neighbors[i];
+            let index = temp.findIndex((elm)=>{return elm.i === neighbor.i && elm.j === neighbor.j})
+            if(index !== -1){
+                if(!current.walls[this.getWallIndex(current, neighbor)]){
+                    path.push(neighbor);
+                    current = neighbor;
+                    break;
+                }
+            }
+        }
         tcount--;
-    // }
-    // console.log(path);
-    // // for(let i=0; i < path.length;i++){
-    // //     console.log(path[i].count, path[i].i, path[i].j)
-    }
-
+    }   
     this.PathCreator();
 }
 

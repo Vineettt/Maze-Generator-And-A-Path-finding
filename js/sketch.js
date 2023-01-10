@@ -9,6 +9,7 @@ let stack = [];
 let queue = [];
 
 let createMaze = true;
+let mazeCompleted = false;
 let startPathFinding = false;
 
 let openSet = [];
@@ -24,6 +25,7 @@ let maze_generator, path_finding;
 let start_time, end_time;
 
 let count = 0;
+let indexI = 0;
 
 function initMazeGeneration() {
     let temp = parseInt(document.getElementById("no_of_cells").value);
@@ -35,6 +37,8 @@ function initMazeGeneration() {
     started = true;
     createMaze = true;
     startPathFinding = false;
+    mazeCompleted = false;
+    indexI = 0;
     openSet = [];
     closedSet = [];
     queue = [];
@@ -79,12 +83,10 @@ function setup() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].addNeighbors();
+            grid[i][j].addChildNodes();
         }
     }
-
     current = grid[0][0];
-
-
     if (maze_generator === "iterative_implementation") {
         current.visited = true;
         stack.push(current)
@@ -100,15 +102,16 @@ function draw() {
                 grid[i][j].show();
             }
         }
-        if (createMaze === true) {
-            this.GenerateMaze();
-        }
-        if (stack.length === 0 && createMaze === true) {
+        if (mazeCompleted === true) {
             console.log("Maze completed!");
             current.highlight(color(0, 0, 0, 0));
             createMaze = false;
+            mazeCompleted = false
             this.calculateTime();
             noLoop();
+        }
+        if (createMaze === true) {
+            this.GenerateMaze();
         }
         if (startPathFinding === true) {
             this.PathFinding();
@@ -173,6 +176,9 @@ function GenerateMaze() {
         case "iterative_implementation":
             this.Iterative_Implementation();
             break;
+        case "binary_tree":
+            this.Binary_Tree();
+            break;
         default:
             noLoop();
             break;
@@ -192,6 +198,9 @@ function Recursive_Maze_Generator() {
         current.highlight(color(0, 0, 0, 0));
         current = stack.pop();
     }
+    if(stack.length === 0){
+        mazeCompleted = true;
+    }
 }
 
 function Iterative_Implementation() {
@@ -205,8 +214,32 @@ function Iterative_Implementation() {
             next.visited = true;
             stack.push(next);
         }
-    } else {
-        createMaze = true;
+    }else{
+        mazeCompleted = true;
+    }
+}
+
+function Binary_Tree(){
+    let tempStack = [];
+    for (let j = 0; j < rows; j++) {
+        if(grid[indexI][j] !== undefined){
+            tempStack.push(grid[indexI][j]); 
+        }
+    }
+
+    while(tempStack.length > 0){
+        current = tempStack.shift();
+        let next = current.checkChildNodes();
+        if(next){
+            removeWalls(current, next);
+        }
+    }
+
+    if(indexI < cols){
+        indexI++;
+    }
+    if(indexI >= cols){
+        mazeCompleted = true;   
     }
 }
 
@@ -312,8 +345,13 @@ function Sample_Algorithm() {
             grid[i][j].show();
         }
     }
+
+    for (let i = 0; i < tempQueue.length; i++) {
+        tempQueue[i].show(color(255, 0, 0, 40) );
+    }
+
     for (let i = 0; i < queue.length; i++) {
-        queue[i].show(color(255, 0, 0, 40));
+        queue[i].show(color(255, 0, 0, 60));
     }
     this.sampleAlgoFindPath();
     if (this.checkIfAlgoReachedEnd()) {

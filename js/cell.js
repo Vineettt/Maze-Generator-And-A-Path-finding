@@ -14,6 +14,8 @@ function Cell(i, j) {
 
     this.neighbors = [];
 
+    this.childNodes = [];
+
     this.checkNeighbors = function () {
         let activeNeighour = [];
 
@@ -43,6 +45,33 @@ function Cell(i, j) {
         }
         if (j > 0) {
             this.neighbors.push(grid[i][j - 1]);
+        }
+    }
+
+    
+    this.addChildNodes = function () {
+        if (i < cols - 1) {
+            this.childNodes.push(grid[i + 1][j]);
+        }
+        if (j < rows - 1) {
+            this.childNodes.push(grid[i][j + 1]);
+        }
+    }
+
+    this.checkChildNodes = function () {
+        let activeChildNodes = [];
+
+        this.childNodes.forEach(element => {
+            if(!element.visited){
+                activeChildNodes.push(element);
+            }
+        });
+
+        if (activeChildNodes.length > 0) {
+            var r = floor(random(0, activeChildNodes.length));
+            return activeChildNodes[r];
+        } else {
+            return undefined;
         }
     }
 

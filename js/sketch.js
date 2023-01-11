@@ -27,12 +27,35 @@ let start_time, end_time;
 let count = 0;
 let indexI = 0;
 
+let slider = false;
+
+function updateStartAndEndCordindates(){
+    slider = true;
+    openSet = [];
+    closedSet = [];
+    queue = [];
+    stack = [];
+    mazeCompleted = false;
+    startPathFinding = false;
+    loop();
+}
+
 function initMazeGeneration() {
     let temp = parseInt(document.getElementById("no_of_cells").value);
     w_h = parseInt(document.getElementById("weight_height").value);
     maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
     cols = temp;
     rows = temp;
+
+    document.getElementById("startIndexI").max = temp;    
+    document.getElementById("startIndexJ").max = temp;
+    document.getElementById("endIndexI").max = temp - 1;
+    document.getElementById("endIndexJ").max = temp - 1;
+    document.getElementById("startIndexI").value = 0;
+    document.getElementById("startIndexJ").value = 0;
+    document.getElementById("endIndexI").value = temp - 1;
+    document.getElementById("endIndexJ").value = temp - 1;
+    
     stack = [];
     started = true;
     createMaze = true;
@@ -54,9 +77,6 @@ function initPathFinding() {
     openSet = [];
     closedSet = [];
     queue = [];
-    start = grid[0][0];
-    start.count = 0;
-    end = grid[cols - 1][rows - 1];
     openSet.push(start);
     queue.push(start);
     count = 0;
@@ -100,13 +120,29 @@ function draw() {
         for (let i = 0; i < cols; i++) {
             for (let j = 0; j < rows; j++) {
                 grid[i][j].show();
+                if(slider === true){
+                    grid[i][j].previous = undefined;
+                }
             }
+        }
+        if(slider === true){
+            slider = false;
+            start = grid[parseInt(document.getElementById("startIndexI").value)][parseInt(document.getElementById("startIndexJ").value)];
+            end = grid[parseInt(document.getElementById("endIndexI").value)][parseInt(document.getElementById("endIndexJ").value)];
+            start.highlight(color(0, 255, 17));
+            end.highlight(color(55, 255, 212));
+            noLoop();
         }
         if (mazeCompleted === true) {
             console.log("Maze completed!");
             current.highlight(color(0, 0, 0, 0));
             createMaze = false;
-            mazeCompleted = false
+            mazeCompleted = false;
+            start = grid[0][0];
+            start.count = 0;
+            end = grid[cols - 1][rows - 1];
+            start.highlight(color(0, 255, 17));
+            end.highlight(color(55, 255, 212));
             this.calculateTime();
             noLoop();
         }
@@ -198,7 +234,7 @@ function Recursive_Maze_Generator() {
         current.highlight(color(0, 0, 0, 0));
         current = stack.pop();
     }
-    if(stack.length === 0){
+    if (stack.length === 0) {
         mazeCompleted = true;
     }
 }
@@ -214,32 +250,33 @@ function Iterative_Implementation() {
             next.visited = true;
             stack.push(next);
         }
-    }else{
+    } else {
         mazeCompleted = true;
     }
 }
 
-function Binary_Tree(){
+function Binary_Tree() {
     let tempStack = [];
     for (let j = 0; j < rows; j++) {
-        if(grid[indexI][j] !== undefined){
-            tempStack.push(grid[indexI][j]); 
+        if (grid[indexI][j] !== undefined) {
+            tempStack.push(grid[indexI][j]);
         }
     }
 
-    while(tempStack.length > 0){
+    while (tempStack.length > 0) {
         current = tempStack.shift();
+        current.visited = true;
         let next = current.checkChildNodes();
-        if(next){
+        if (next) {
             removeWalls(current, next);
         }
     }
 
-    if(indexI < cols){
+    if (indexI < cols) {
         indexI++;
     }
-    if(indexI >= cols){
-        mazeCompleted = true;   
+    if (indexI >= cols) {
+        mazeCompleted = true;
     }
 }
 
@@ -329,7 +366,7 @@ function Sample_Algorithm() {
             let neighbor = neighbors[j];
             if (!current.walls[this.getWallIndex(current, neighbor)]) {
                 let index = queue.findIndex((elm) => { return elm.i === neighbor.i && elm.j === neighbor.j });
-                if(index === -1){
+                if (index === -1) {
                     tempQueue.push(neighbor);
                 }
             }
@@ -339,7 +376,7 @@ function Sample_Algorithm() {
         element.count = count + 1;
     });
     queue = queue.concat(tempQueue);
-    count ++;
+    count++;
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].show();
@@ -347,7 +384,7 @@ function Sample_Algorithm() {
     }
 
     for (let i = 0; i < tempQueue.length; i++) {
-        tempQueue[i].show(color(255, 0, 0, 40) );
+        tempQueue[i].show(color(255, 0, 0, 40));
     }
 
     for (let i = 0; i < queue.length; i++) {
@@ -387,14 +424,14 @@ function sampleAlgoFindPath() {
     path.push(end);
     tcount = count - 1;
 
-    while(tcount > -1){
-        let temp = queue.filter((elm)=>{ return elm.count === tcount })
+    while (tcount > -1) {
+        let temp = queue.filter((elm) => { return elm.count === tcount })
         let neighbors = current.neighbors;
         for (let i = 0; i < neighbors.length; i++) {
             let neighbor = neighbors[i];
-            let index = temp.findIndex((elm)=>{return elm.i === neighbor.i && elm.j === neighbor.j})
-            if(index !== -1){
-                if(!current.walls[this.getWallIndex(current, neighbor)]){
+            let index = temp.findIndex((elm) => { return elm.i === neighbor.i && elm.j === neighbor.j })
+            if (index !== -1) {
+                if (!current.walls[this.getWallIndex(current, neighbor)]) {
                     path.push(neighbor);
                     current = neighbor;
                     break;
@@ -402,7 +439,7 @@ function sampleAlgoFindPath() {
             }
         }
         tcount--;
-    }   
+    }
     this.PathCreator();
 }
 

@@ -20,7 +20,7 @@ function Cell(i, j) {
         let activeNeighour = [];
 
         this.neighbors.forEach(element => {
-            if(!element.visited){
+            if (!element.visited) {
                 activeNeighour.push(element);
             }
         });
@@ -48,13 +48,23 @@ function Cell(i, j) {
         }
     }
 
-    
-    this.addChildNodes = function () {
-        if (i < cols - 1) {
-            this.childNodes.push(grid[i + 1][j]);
+
+    this.addChildNodes = function (bias) {
+        if(bias === "nw"){
+            if (i > 0) {
+                this.childNodes.push(grid[i - 1][j]);
+            }
+            if (j > 0) {
+                this.childNodes.push(grid[i][j - 1]);
+            }
         }
-        if (j < rows - 1) {
-            this.childNodes.push(grid[i][j + 1]);
+        if(bias === "se"){
+            if (i < cols - 1) {
+                this.childNodes.push(grid[i + 1][j]);
+            }
+            if (j < rows - 1) {
+                this.childNodes.push(grid[i][j + 1]);
+            }
         }
     }
 
@@ -62,7 +72,7 @@ function Cell(i, j) {
         let activeChildNodes = [];
 
         this.childNodes.forEach(element => {
-            if(!element.visited){
+            if (!element.visited) {
                 activeChildNodes.push(element);
             }
         });
@@ -84,10 +94,10 @@ function Cell(i, j) {
     }
 
     this.show = function (col) {
-        if(col){
+        if (col) {
             fill(col);
             rect(this.i * w, this.j * h, w, h);
-        }else{
+        } else {
             var x = this.i * w;
             var y = this.j * w;
             stroke(255);

@@ -11,6 +11,18 @@
 </head>
 
 <body>
+
+    <label for="bias">Bias:</label>
+
+    <select name="bias" id="bias">
+        <option value="nw">Northwest</option>
+        <option value="ne">Northeast</option>
+        <option value="sw">Southwest</option>
+        <option value="se">Southeast</option>
+    </select>
+
+    <br>
+
     <input type="radio" id="rmg" name="maze_generator" value="recursive_maze_generator" checked>
     <label for="rmg">Recursive Maze Generator</label><br>
     <input type="radio" id="iter_imp" name="maze_generator" value="iterative_implementation">
@@ -33,17 +45,17 @@
     <br>
 
     <label for="startIndex">Start Index</label>
-    <input type="range" min="0" max="" step="1" value="0" class="slider" id="startIndexI">
-    <input type="range" min="0" max="" step="1" value="0" class="slider" id="startIndexJ">
+    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()" id="startIndexI">
+    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()" id="startIndexJ">
     <br>
     <label for="endIndex">End Index</label>
-    <input type="range" min="0" max="" step="1" value="0" class="slider" id="endIndexI">
-    <input type="range" min="0" max="" step="1" value="0" class="slider" id="endIndexJ">
+    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()" id="endIndexI">
+    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()" id="endIndexJ">
     <br>
-    <button onclick="updateStartAndEndCordindates()">Update Start/End Cordindates</button>
-    <br>
-    <input type="range" min="5" max="100" step="5" value="20" class="slider" id="no_of_cells">
-    <input type="range" min="100" max="1000" step="100" value="500" class="slider" id="weight_height">
+    <label for="endIndex">Cells</label>
+    <input type="range" min="5" max="100" step="5" value="20" class="slider" onchange="updateCanvasDate()" id="no_of_cells">
+    <label for="endIndex">Matrix</label>
+    <input type="range" min="100" max="1000" step="100" value="500" class="slider" onchange="updateCanvasDate()" id="weight_height">
 
     <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js" async defer></script>
     <script src="./js/cell.js" async defer></script>

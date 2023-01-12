@@ -28,6 +28,8 @@ let count = 0;
 let indexI = 0;
 
 let slider = false;
+let bias;
+let createCanvasFlag = true;
 
 function updateStartAndEndCordindates(){
     slider = true;
@@ -40,34 +42,53 @@ function updateStartAndEndCordindates(){
     loop();
 }
 
-function initMazeGeneration() {
+function updateCanvasDate(){
     let temp = parseInt(document.getElementById("no_of_cells").value);
     w_h = parseInt(document.getElementById("weight_height").value);
+    bias =   document.querySelector('select[name="bias"]').value;
     maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
     cols = temp;
     rows = temp;
+    stack = [];
+    openSet = [];
+    closedSet = [];
+    queue = [];
+    grid = new Array(cols);
+    this.setup();
+    createCanvasFlag = true;
+    loop();
+}
 
-    document.getElementById("startIndexI").max = temp;    
-    document.getElementById("startIndexJ").max = temp;
-    document.getElementById("endIndexI").max = temp - 1;
-    document.getElementById("endIndexJ").max = temp - 1;
+function initMazeGeneration() {
+    bias =   document.querySelector('select[name="bias"]').value;
+    maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
+
+
+    document.getElementById("startIndexI").max = cols - 1;    
+    document.getElementById("startIndexJ").max = rows - 1;
+    document.getElementById("endIndexI").max = cols - 1;
+    document.getElementById("endIndexJ").max = rows - 1;
     document.getElementById("startIndexI").value = 0;
     document.getElementById("startIndexJ").value = 0;
-    document.getElementById("endIndexI").value = temp - 1;
-    document.getElementById("endIndexJ").value = temp - 1;
+    document.getElementById("endIndexI").value = cols - 1;
+    document.getElementById("endIndexJ").value = rows - 1;
     
-    stack = [];
     started = true;
     createMaze = true;
     startPathFinding = false;
     mazeCompleted = false;
-    indexI = 0;
-    openSet = [];
-    closedSet = [];
-    queue = [];
     count = 0;
+    // openSet = [];
+    // closedSet = [];
+    // queue = [];
+    if(maze_generator === "binary_tree"){
+        if(bias === "se"){
+            indexI = 0;
+        }else{
+            indexI = cols-1;
+        }
+    }
     start_time = new Date();
-    this.setup();
     loop();
 }
 
@@ -77,6 +98,7 @@ function initPathFinding() {
     openSet = [];
     closedSet = [];
     queue = [];
+    console.log(start);
     openSet.push(start);
     queue.push(start);
     count = 0;
@@ -103,7 +125,7 @@ function setup() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].addNeighbors();
-            grid[i][j].addChildNodes();
+            grid[i][j].addChildNodes(bias);
         }
     }
     current = grid[0][0];
@@ -113,18 +135,27 @@ function setup() {
     }
 }
 
-function draw() {
-    if (started) {
-        background(51);
-        // frameRate(5);    
-        for (let i = 0; i < cols; i++) {
-            for (let j = 0; j < rows; j++) {
-                grid[i][j].show();
-                if(slider === true){
-                    grid[i][j].previous = undefined;
-                }
+function generateMatrix(){
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            grid[i][j].show();
+            if(slider === true){
+                grid[i][j].previous = undefined;
             }
         }
+    }
+}
+
+function draw() {
+    background(51);
+    if(createCanvasFlag){
+        createCanvasFlag = false;
+        this.generateMatrix();
+        noLoop();
+    }
+    if (started) {
+        // frameRate(5);    
+        this.generateMatrix();
         if(slider === true){
             slider = false;
             start = grid[parseInt(document.getElementById("startIndexI").value)][parseInt(document.getElementById("startIndexJ").value)];
@@ -173,6 +204,7 @@ function getWallIndex(a, b) {
 
 function removeWalls(a, b) {
     let x = a.i - b.i;
+    let y = a.j - b.j;
     if (x === 1) {
         a.walls[3] = false;
         b.walls[1] = false;
@@ -180,7 +212,6 @@ function removeWalls(a, b) {
         a.walls[1] = false;
         b.walls[3] = false;
     }
-    let y = a.j - b.j;
     if (y === 1) {
         a.walls[0] = false;
         b.walls[2] = false;
@@ -264,7 +295,11 @@ function Binary_Tree() {
     }
 
     while (tempStack.length > 0) {
-        current = tempStack.shift();
+        if(bias === "se"){
+            current = tempStack.shift();
+        }else{
+            current = tempStack.pop();
+        }
         current.visited = true;
         let next = current.checkChildNodes();
         if (next) {
@@ -272,12 +307,22 @@ function Binary_Tree() {
         }
     }
 
-    if (indexI < cols) {
-        indexI++;
+    if(bias === "se"){
+        if (indexI < cols) {
+            indexI++;
+        }
+        if (indexI >= cols) {
+            mazeCompleted = true;
+        }
+    }else{
+        if (indexI >= 0) {
+            indexI--;
+        }
+        if (indexI < 0) {
+            mazeCompleted = true;
+        }
     }
-    if (indexI >= cols) {
-        mazeCompleted = true;
-    }
+
 }
 
 function PathFinding() {

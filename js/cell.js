@@ -50,7 +50,7 @@ function Cell(i, j) {
 
 
     this.addChildNodes = function (bias) {
-        if(bias === "nw"){
+        if (bias === "nw") {
             if (i > 0) {
                 this.childNodes.push(grid[i - 1][j]);
             }
@@ -58,7 +58,23 @@ function Cell(i, j) {
                 this.childNodes.push(grid[i][j - 1]);
             }
         }
-        if(bias === "se"){
+        if (bias === "ne") {
+            if (j > 0) {
+                this.childNodes.push(grid[i][j - 1]);
+            }
+            if (i < cols - 1) {
+                this.childNodes.push(grid[i + 1][j]);
+            }
+        }
+        if (bias === "sw") {
+            if (i > 0) {
+                this.childNodes.push(grid[i - 1][j]);
+            }
+            if (j < rows - 1) {
+                this.childNodes.push(grid[i][j + 1]);
+            }
+        }
+        if (bias === "se") {
             if (i < cols - 1) {
                 this.childNodes.push(grid[i + 1][j]);
             }

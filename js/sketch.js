@@ -1,17 +1,14 @@
 let w_h = 600;
 let cols = 25;
 let rows = 25;
+let currentI = 0;
+let currentJ = 0;
+
 let grid = new Array(cols);
 let w, h;
 
 let stack = [];
-
 let queue = [];
-
-let createMaze = true;
-let mazeCompleted = false;
-let startPathFinding = false;
-
 let openSet = [];
 let closedSet = [];
 
@@ -27,11 +24,38 @@ let start_time, end_time;
 let count = 0;
 let indexI = 0;
 
-let slider = false;
-let bias;
-let createCanvasFlag = true;
+let bias = document.querySelector('select[name="bias"]').value;
 
-function updateStartAndEndCordindates(){
+let createMaze = false;
+let mazeCompleted = false;
+let startPathFinding = false;
+let createCanvasFlag = true;
+let slider = false;
+
+uiUpdate();
+
+
+function uiUpdate() {
+    let temp = parseInt(document.getElementById("no_of_cells").value);
+    cols = temp;
+    rows = temp;
+    w_h = parseInt(document.getElementById("weight_height").value);
+    bias = document.querySelector('select[name="bias"]').value;
+    maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
+    bias = document.querySelector('select[name="bias"]').value;
+    maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
+    document.getElementById("startIndexI").max = cols - 1;
+    document.getElementById("startIndexJ").max = rows - 1;
+    document.getElementById("endIndexI").max = cols - 1;
+    document.getElementById("endIndexJ").max = rows - 1;
+    document.getElementById("startIndexI").value = 0;
+    document.getElementById("startIndexJ").value = 0;
+    document.getElementById("endIndexI").value = cols - 1;
+    document.getElementById("endIndexJ").value = rows - 1;
+    this.updateCurrentIndexes();
+}
+
+function updateStartAndEndCordindates() {
     slider = true;
     openSet = [];
     closedSet = [];
@@ -42,13 +66,29 @@ function updateStartAndEndCordindates(){
     loop();
 }
 
-function updateCanvasDate(){
-    let temp = parseInt(document.getElementById("no_of_cells").value);
-    w_h = parseInt(document.getElementById("weight_height").value);
-    bias =   document.querySelector('select[name="bias"]').value;
-    maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
-    cols = temp;
-    rows = temp;
+function updateCurrentIndexes(){
+    bias = document.querySelector('select[name="bias"]').value;
+    console.log(bias);
+    if(bias === "nw"){
+        currentI = 0;
+        currentJ = 0;
+    }
+    if(bias === "ne"){
+        currentI = 0;
+        currentJ = rows - 1;
+    }
+    if(bias === "sw"){
+        currentI = rows - 1;
+        currentJ = 0;
+    }
+    if(bias === "se"){
+        currentI = cols - 1;
+        currentJ = rows - 1;
+    }
+}
+
+function updateCanvasData() {
+    this.uiUpdate();
     stack = [];
     openSet = [];
     closedSet = [];
@@ -60,32 +100,17 @@ function updateCanvasDate(){
 }
 
 function initMazeGeneration() {
-    bias =   document.querySelector('select[name="bias"]').value;
-    maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
-
-
-    document.getElementById("startIndexI").max = cols - 1;    
-    document.getElementById("startIndexJ").max = rows - 1;
-    document.getElementById("endIndexI").max = cols - 1;
-    document.getElementById("endIndexJ").max = rows - 1;
-    document.getElementById("startIndexI").value = 0;
-    document.getElementById("startIndexJ").value = 0;
-    document.getElementById("endIndexI").value = cols - 1;
-    document.getElementById("endIndexJ").value = rows - 1;
-    
-    started = true;
+    this.updateCanvasData();
+    createCanvasFlag = true;
     createMaze = true;
     startPathFinding = false;
     mazeCompleted = false;
     count = 0;
-    // openSet = [];
-    // closedSet = [];
-    // queue = [];
-    if(maze_generator === "binary_tree"){
-        if(bias === "se"){
+    if (maze_generator === "binary_tree") {
+        if (bias === "se" || bias === "ne") {
             indexI = 0;
-        }else{
-            indexI = cols-1;
+        } else if (bias === "nw" || bias === "sw") {
+            indexI = cols - 1;
         }
     }
     start_time = new Date();
@@ -98,7 +123,6 @@ function initPathFinding() {
     openSet = [];
     closedSet = [];
     queue = [];
-    console.log(start);
     openSet.push(start);
     queue.push(start);
     count = 0;
@@ -128,18 +152,19 @@ function setup() {
             grid[i][j].addChildNodes(bias);
         }
     }
-    current = grid[0][0];
+    current = grid[currentI][currentJ];
     if (maze_generator === "iterative_implementation") {
         current.visited = true;
         stack.push(current)
     }
+
 }
 
-function generateMatrix(){
+function generateMatrix() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].show();
-            if(slider === true){
+            if (slider === true) {
                 grid[i][j].previous = undefined;
             }
         }
@@ -148,15 +173,19 @@ function generateMatrix(){
 
 function draw() {
     background(51);
-    if(createCanvasFlag){
+    if (createCanvasFlag) {
         createCanvasFlag = false;
         this.generateMatrix();
-        noLoop();
+        if(createMaze !== true){
+            noLoop();
+        }else{
+            started = true;
+        }
     }
     if (started) {
         // frameRate(5);    
         this.generateMatrix();
-        if(slider === true){
+        if (slider === true) {
             slider = false;
             start = grid[parseInt(document.getElementById("startIndexI").value)][parseInt(document.getElementById("startIndexJ").value)];
             end = grid[parseInt(document.getElementById("endIndexI").value)][parseInt(document.getElementById("endIndexJ").value)];
@@ -293,11 +322,10 @@ function Binary_Tree() {
             tempStack.push(grid[indexI][j]);
         }
     }
-
     while (tempStack.length > 0) {
-        if(bias === "se"){
+        if (bias === "se" || bias === "sw") {
             current = tempStack.shift();
-        }else{
+        } else if (bias === "nw" || bias === "ne") {
             current = tempStack.pop();
         }
         current.visited = true;
@@ -307,14 +335,14 @@ function Binary_Tree() {
         }
     }
 
-    if(bias === "se"){
+    if (bias === "se" || bias === "ne") {
         if (indexI < cols) {
             indexI++;
         }
         if (indexI >= cols) {
             mazeCompleted = true;
         }
-    }else{
+    } else if (bias === "nw" || bias === "sw") {
         if (indexI >= 0) {
             indexI--;
         }

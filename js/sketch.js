@@ -68,7 +68,6 @@ function updateStartAndEndCordindates() {
 
 function updateCurrentIndexes(){
     bias = document.querySelector('select[name="bias"]').value;
-    console.log(bias);
     if(bias === "nw"){
         currentI = 0;
         currentJ = 0;

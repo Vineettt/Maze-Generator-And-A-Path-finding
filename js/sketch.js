@@ -26,11 +26,15 @@ let indexI = 0;
 
 let bias = document.querySelector('select[name="bias"]').value;
 
-let createMaze = false;
-let mazeCompleted = false;
-let startPathFinding = false;
-let createCanvasFlag = true;
-let slider = false;
+let mazeGeneratorAndPathFindingObject = {
+    createMaze : false,
+    mazeCompleted : false,
+    startPathFinding : false,
+    createCanvasFlag : true,
+    slider : false
+}
+
+
 
 uiUpdate();
 
@@ -56,13 +60,13 @@ function uiUpdate() {
 }
 
 function updateStartAndEndCordindates() {
-    slider = true;
+    mazeGeneratorAndPathFindingObject.slider = true;
     openSet = [];
     closedSet = [];
     queue = [];
     stack = [];
-    mazeCompleted = false;
-    startPathFinding = false;
+    mazeGeneratorAndPathFindingObject.mazeCompleted = false;
+    mazeGeneratorAndPathFindingObject.startPathFinding = false;
     loop();
 }
 
@@ -94,16 +98,16 @@ function updateCanvasData() {
     queue = [];
     grid = new Array(cols);
     this.setup();
-    createCanvasFlag = true;
+    mazeGeneratorAndPathFindingObject.createCanvasFlag = true;
     loop();
 }
 
 function initMazeGeneration() {
     this.updateCanvasData();
-    createCanvasFlag = true;
-    createMaze = true;
-    startPathFinding = false;
-    mazeCompleted = false;
+    mazeGeneratorAndPathFindingObject.createCanvasFlag = true;
+    mazeGeneratorAndPathFindingObject.createMaze = true;
+    mazeGeneratorAndPathFindingObject.startPathFinding = false;
+    mazeGeneratorAndPathFindingObject.mazeCompleted = false;
     count = 0;
     if (maze_generator === "binary_tree") {
         if (bias === "se" || bias === "ne") {
@@ -118,7 +122,7 @@ function initMazeGeneration() {
 
 function initPathFinding() {
     path_finding = document.querySelector('input[name="path_finding"]:checked').value;
-    startPathFinding = true;
+    mazeGeneratorAndPathFindingObject.startPathFinding = true;
     openSet = [];
     closedSet = [];
     queue = [];
@@ -163,7 +167,7 @@ function generateMatrix() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].show();
-            if (slider === true) {
+            if (mazeGeneratorAndPathFindingObject.slider === true) {
                 grid[i][j].previous = undefined;
             }
         }
@@ -172,31 +176,31 @@ function generateMatrix() {
 
 function draw() {
     background(51);
-    if (createCanvasFlag) {
-        createCanvasFlag = false;
+    if (mazeGeneratorAndPathFindingObject.createCanvasFlag) {
+        mazeGeneratorAndPathFindingObject.createCanvasFlag = false;
         this.generateMatrix();
-        if(createMaze !== true){
+        if(mazeGeneratorAndPathFindingObject.createMaze !== true){
             noLoop();
         }else{
-            started = true;
+            mazeGeneratorAndPathFindingObject.started = true;
         }
     }
-    if (started) {
+    if (mazeGeneratorAndPathFindingObject.started) {
         // frameRate(5);    
         this.generateMatrix();
-        if (slider === true) {
-            slider = false;
+        if (mazeGeneratorAndPathFindingObject.slider === true) {
+            mazeGeneratorAndPathFindingObject.slider = false;
             start = grid[parseInt(document.getElementById("startIndexI").value)][parseInt(document.getElementById("startIndexJ").value)];
             end = grid[parseInt(document.getElementById("endIndexI").value)][parseInt(document.getElementById("endIndexJ").value)];
             start.highlight(color(0, 255, 17));
             end.highlight(color(55, 255, 212));
             noLoop();
         }
-        if (mazeCompleted === true) {
+        if (mazeGeneratorAndPathFindingObject.mazeCompleted === true) {
             console.log("Maze completed!");
             current.highlight(color(0, 0, 0, 0));
-            createMaze = false;
-            mazeCompleted = false;
+            mazeGeneratorAndPathFindingObject.createMaze = false;
+            mazeGeneratorAndPathFindingObject.mazeCompleted = false;
             start = grid[0][0];
             start.count = 0;
             end = grid[cols - 1][rows - 1];
@@ -205,10 +209,10 @@ function draw() {
             this.calculateTime();
             noLoop();
         }
-        if (createMaze === true) {
+        if (mazeGeneratorAndPathFindingObject.createMaze === true) {
             this.GenerateMaze();
         }
-        if (startPathFinding === true) {
+        if (mazeGeneratorAndPathFindingObject.startPathFinding === true) {
             this.PathFinding();
         }
     }
@@ -294,7 +298,7 @@ function Recursive_Maze_Generator() {
         current = stack.pop();
     }
     if (stack.length === 0) {
-        mazeCompleted = true;
+        mazeGeneratorAndPathFindingObject.mazeCompleted = true;
     }
 }
 
@@ -310,7 +314,7 @@ function Iterative_Implementation() {
             stack.push(next);
         }
     } else {
-        mazeCompleted = true;
+        mazeGeneratorAndPathFindingObject.mazeCompleted = true;
     }
 }
 
@@ -346,7 +350,7 @@ function Binary_Tree() {
             indexI--;
         }
         if (indexI < 0) {
-            mazeCompleted = true;
+            mazeGeneratorAndPathFindingObject.mazeCompleted = true;
         }
     }
 

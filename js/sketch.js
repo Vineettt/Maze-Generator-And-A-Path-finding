@@ -342,8 +342,8 @@ function Binary_Tree() {
         if (indexI < cols) {
             indexI++;
         }
-        if (indexI >= cols) {
-            mazeCompleted = true;
+        if (indexI >= cols ) {
+            mazeGeneratorAndPathFindingObject.mazeCompleted = true;
         }
     } else if (bias === "nw" || bias === "sw") {
         if (indexI >= 0) {

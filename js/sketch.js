@@ -34,6 +34,8 @@ let mazeGeneratorAndPathFindingObject = {
     slider: false
 }
 
+let history = [];
+
 uiUpdate();
 
 function downloadCanvas(){
@@ -122,6 +124,9 @@ function initMazeGeneration() {
         }
     }
     start_time = new Date();
+    let tempObj = {};
+    tempObj[maze_generator] = 0;
+    history.push({ maze : tempObj});
     loop();
 }
 
@@ -211,10 +216,11 @@ function draw() {
             end = grid[cols - 1][rows - 1];
             start.highlight(color(0, 255, 17));
             end.highlight(color(55, 255, 212));
-            this.calculateTime();
+            this.updateHistoryArray();
             noLoop();
         }
         if (mazeGeneratorAndPathFindingObject.createMaze === true) {
+            this.updateHistoryArray();
             this.GenerateMaze();
         }
         if (mazeGeneratorAndPathFindingObject.startPathFinding === true) {
@@ -556,5 +562,27 @@ function PathCreator() {
 function calculateTime() {
     end_time = new Date();
     const diffTime = Math.abs(end_time - start_time);
-    console.log(diffTime / 1000, maze_generator);
+    return diffTime / 1000;
+}
+
+function updateHistoryArray(){
+    let update  = history[history.length-1];
+    let lastObject = update[Object.keys(update)[Object.keys(update).length - 1]];
+    lastObject[Object.keys(lastObject)[Object.keys(lastObject).length - 1]] = this.calculateTime();
+    this.updateMazePathUI();
+}
+
+function updateMazePathUI(){
+    var elem = document.querySelector('#mazePath');
+    let html = '';
+    for (let index = history.length - 1; index >= 0; index--) {
+        for (const key in history[index]) {
+            html += `${key}`;
+            let temp = history[index][key];
+            for (const key1 in temp) {
+                html += `${key1} ${temp[key1]}`
+            }
+        }
+    }
+    elem.innerHTML = html;
 }

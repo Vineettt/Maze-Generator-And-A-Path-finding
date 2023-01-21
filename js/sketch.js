@@ -27,11 +27,11 @@ let indexI = 0;
 let bias = document.querySelector('select[name="bias"]').value;
 
 let mazeGeneratorAndPathFindingObject = {
-    createMaze : false,
-    mazeCompleted : false,
-    startPathFinding : false,
-    createCanvasFlag : true,
-    slider : false
+    createCanvasFlag: true,
+    createMaze: false,
+    mazeCompleted: false,
+    startPathFinding: false,
+    slider: false
 }
 
 
@@ -44,8 +44,6 @@ function uiUpdate() {
     cols = temp;
     rows = temp;
     w_h = parseInt(document.getElementById("weight_height").value);
-    bias = document.querySelector('select[name="bias"]').value;
-    maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
     bias = document.querySelector('select[name="bias"]').value;
     maze_generator = document.querySelector('input[name="maze_generator"]:checked').value;
     document.getElementById("startIndexI").max = cols - 1;
@@ -61,30 +59,30 @@ function uiUpdate() {
 
 function updateStartAndEndCordindates() {
     mazeGeneratorAndPathFindingObject.slider = true;
+    mazeGeneratorAndPathFindingObject.mazeCompleted = false;
+    mazeGeneratorAndPathFindingObject.startPathFinding = false;
     openSet = [];
     closedSet = [];
     queue = [];
     stack = [];
-    mazeGeneratorAndPathFindingObject.mazeCompleted = false;
-    mazeGeneratorAndPathFindingObject.startPathFinding = false;
     loop();
 }
 
-function updateCurrentIndexes(){
+function updateCurrentIndexes() {
     bias = document.querySelector('select[name="bias"]').value;
-    if(bias === "nw"){
+    if (bias === "nw") {
         currentI = 0;
         currentJ = 0;
     }
-    if(bias === "ne"){
+    if (bias === "ne") {
         currentI = 0;
         currentJ = rows - 1;
     }
-    if(bias === "sw"){
+    if (bias === "sw") {
         currentI = rows - 1;
         currentJ = 0;
     }
-    if(bias === "se"){
+    if (bias === "se") {
         currentI = cols - 1;
         currentJ = rows - 1;
     }
@@ -179,9 +177,9 @@ function draw() {
     if (mazeGeneratorAndPathFindingObject.createCanvasFlag) {
         mazeGeneratorAndPathFindingObject.createCanvasFlag = false;
         this.generateMatrix();
-        if(mazeGeneratorAndPathFindingObject.createMaze !== true){
+        if (mazeGeneratorAndPathFindingObject.createMaze !== true) {
             noLoop();
-        }else{
+        } else {
             mazeGeneratorAndPathFindingObject.started = true;
         }
     }
@@ -342,7 +340,7 @@ function Binary_Tree() {
         if (indexI < cols) {
             indexI++;
         }
-        if (indexI >= cols ) {
+        if (indexI >= cols) {
             mazeGeneratorAndPathFindingObject.mazeCompleted = true;
         }
     } else if (bias === "nw" || bias === "sw") {

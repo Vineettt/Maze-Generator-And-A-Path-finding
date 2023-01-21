@@ -34,10 +34,17 @@ let mazeGeneratorAndPathFindingObject = {
     slider: false
 }
 
-
-
 uiUpdate();
 
+function downloadCanvas(){
+    let canvasArray = document.getElementsByTagName("canvas");
+    for (let index = 0; index < canvasArray.length; index++) {
+        var link = document.createElement('a');
+        link.download = `${new Date().getTime()}.png`;
+        link.href = canvasArray[index].toDataURL()
+        link.click();
+    }
+}
 
 function uiUpdate() {
     let temp = parseInt(document.getElementById("no_of_cells").value);

@@ -8,53 +8,71 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
+    <style>
+        body{
+            display: flex;
+            gap: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="mazePath"></div>
-    <label for="endIndex">Cells</label>
-    <input type="range" min="5" max="100" step="5" value="20" class="cells" onchange="updateCanvasData()"
-        id="no_of_cells">
-    <label for="endIndex">Matrix</label>
-    <input type="range" min="100" max="1000" step="100" value="500" class="matrix" onchange="updateCanvasData()"
-        id="weight_height">
-    <br>
-    <label for="bias">Bias:</label>
-    <select name="bias" id="bias" onchange="updateCanvasData()">
-        <option value="nw">Northwest</option>
-        <option value="ne">Northeast</option>
-        <option value="sw">Southwest</option>
-        <option value="se">Southeast</option>
-    </select>
-    <br>
-    <input type="radio" id="rmg" name="maze_generator" value="recursive_maze_generator" checked>
-    <label for="rmg">Recursive Maze Generator</label><br>
-    <input type="radio" id="iter_imp" name="maze_generator" value="iterative_implementation">
-    <label for="iter_imp">Iterative implementation</label><br>
-    <input type="radio" id="binary_tree" name="maze_generator" value="binary_tree">
-    <label for="binary_tree">Binary Tree</label><br>
-    <button onclick="initMazeGeneration()" id="generateMaze">Generate Maze</button>
-    <br>
-    <input type="radio" id="a_star" name="path_finding" value="a_star" checked>
-    <label for="a_star">A*</label><br>
-    <input type="radio" id="sample_algorithm" name="path_finding" value="sample_algorithm">
-    <label for="sample_algorithm">Sample Algorithm</label><br>
-    <button onclick="initPathFinding()" id="generatePath">Generate Path</button>
-    <br>
-    <label for="startIndex">Start Position</label>
-    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
-        id="startIndexI">
-    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
-        id="startIndexJ">
-    <br>
-    <label for="endIndex">End Position</label>
-    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
-        id="endIndexI">
-    <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
-        id="endIndexJ">
-    <br>
-    <button onclick="downloadCanvas()" id="downloadCanvas">Download Canvas</button>
-    <br>
+    <div>
+        <label for="endIndex">Cells</label>
+        <br>
+        <input type="range" min="5" max="100" step="5" value="20" class="cells" onchange="updateCanvasData()"
+            id="no_of_cells">
+        <br>
+        <label for="endIndex">Matrix</label>
+        <br>
+        <input type="range" min="100" max="1000" step="100" value="500" class="matrix" onchange="updateCanvasData()"
+            id="weight_height">
+        <br>
+        <label for="bias">Bias:</label>
+        <select name="bias" id="bias" onchange="updateCanvasData()">
+            <option value="nw">Northwest</option>
+            <option value="ne">Northeast</option>
+            <option value="sw">Southwest</option>
+            <option value="se">Southeast</option>
+        </select>
+        <br>
+        <input type="radio" id="rmg" name="maze_generator" value="recursive_maze_generator" checked>
+        <label for="rmg">Recursive Maze Generator</label><br>
+        <input type="radio" id="iter_imp" name="maze_generator" value="iterative_implementation">
+        <label for="iter_imp">Iterative implementation</label><br>
+        <input type="radio" id="binary_tree" name="maze_generator" value="binary_tree">
+        <label for="binary_tree">Binary Tree</label><br>
+        <button onclick="initMazeGeneration()" id="generateMaze">Generate Maze</button>
+        <br>
+        <input type="radio" id="a_star" name="path_finding" value="a_star" checked>
+        <label for="a_star">A*</label><br>
+        <input type="radio" id="sample_algorithm" name="path_finding" value="sample_algorithm">
+        <label for="sample_algorithm">Sample Algorithm</label><br>
+        <button onclick="initPathFinding()" id="generatePath">Generate Path</button>
+        <br>
+        <label for="startIndex">Start Position</label>
+        <br>
+
+        <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
+            id="startIndexI">
+        <br>
+
+        <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
+            id="startIndexJ">
+        <br>
+        <label for="endIndex">End Position</label>
+        <br>
+
+        <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
+            id="endIndexI">
+        <br>
+        <input type="range" min="0" max="" step="1" value="0" class="slider" onchange="updateStartAndEndCordindates()"
+            id="endIndexJ">
+        <br>
+        <button onclick="downloadCanvas()" id="downloadCanvas">Download Canvas</button>
+        <br>
+        <div id="mazePath"></div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js" async defer></script>
     <script src="./js/cell.js" async defer></script>
     <script src="./js/sketch.js" async defer></script>

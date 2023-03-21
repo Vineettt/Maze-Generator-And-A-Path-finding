@@ -573,16 +573,17 @@ function updateHistoryArray(){
 }
 
 function updateMazePathUI(){
-    var elem = document.querySelector('#mazePath');
-    let html = '';
-    for (let index = history.length - 1; index >= 0; index--) {
-        for (const key in history[index]) {
-            html += `${key}`;
-            let temp = history[index][key];
-            for (const key1 in temp) {
-                html += `${key1} ${temp[key1]}`
-            }
-        }
-    }
-    elem.innerHTML = html;
+    // console.log(history);
+    // var elem = document.querySelector('#mazePath');
+    // let html = '';
+    // for (let index = history.length - 1; index >= 0; index--) {
+    //     for (const key in history[index]) {
+    //         html += `${key}`;
+    //         let temp = history[index][key];
+    //         for (const key1 in temp) {
+    //             html += `${key1} ${temp[key1]}`
+    //         }
+    //     }
+    // }
+    // elem.innerHTML = html;
 }
